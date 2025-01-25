@@ -16,3 +16,10 @@ data class AnggotaResponse(
     val message: String,
     val data: List<Anggota>
 )
+
+@Serializable
+data class AnggotaResponseDetail(
+    val status: Boolean,
+    val message: String,
+    val data: Anggota
+)
