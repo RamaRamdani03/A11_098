@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,10 +16,37 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.perpustakaan.ui.navigasi.AlamatNavigasi
 import com.example.perpustakaan.ui.viewmodel.anggota.InsertAnggotaUiEvent
+import com.example.perpustakaan.ui.viewmodel.anggota.InsertAnggotaUiState
 
 object DestinasiInsertAnggota: AlamatNavigasi {
     override val route: String = "item_entryanggota"
     override val titleRes = "Entry Anggota"
+}
+
+@Composable
+fun EntryBody(
+    insertUiState: InsertAnggotaUiState,
+    onAnggotaValueChange: (InsertAnggotaUiEvent) -> Unit,
+    onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(18.dp),
+        modifier = modifier.padding(12.dp)
+    ) {
+        FormAnggotaInput(
+            insertUiEvent = insertUiState.insertUiEvent,
+            onValueChange = onAnggotaValueChange,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Button(
+            onClick = onSaveClick,
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Simpan")
+        }
+    }
 }
 
 @Composable
