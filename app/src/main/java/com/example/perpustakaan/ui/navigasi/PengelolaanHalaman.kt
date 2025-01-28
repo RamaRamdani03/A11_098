@@ -28,7 +28,14 @@ import com.example.perpustakaan.ui.view.buku.DetailBukuView
 import com.example.perpustakaan.ui.view.buku.EntryBukuScreen
 import com.example.perpustakaan.ui.view.buku.HomeScreenBuku
 import com.example.perpustakaan.ui.view.buku.UpdateBukuScreen
+import com.example.perpustakaan.ui.view.peminjaman.DestinasiDetailPeminjaman
 import com.example.perpustakaan.ui.view.peminjaman.DestinasiHomePeminjaman
+import com.example.perpustakaan.ui.view.peminjaman.DestinasiInsertPeminjaman
+import com.example.perpustakaan.ui.view.peminjaman.DestinasiUpdatePeminjaman
+import com.example.perpustakaan.ui.view.peminjaman.DetailPeminjamanView
+import com.example.perpustakaan.ui.view.peminjaman.EntryPeminjamanScreen
+import com.example.perpustakaan.ui.view.peminjaman.HomeScreenPeminjaman
+import com.example.perpustakaan.ui.view.peminjaman.UpdatePeminjamanScreen
 import com.example.perpustakaan.ui.view.pengembalian.DestinasiHomePengembalian
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -184,6 +191,73 @@ fun PengelolaanHalaman (
                         navController.popBackStack()
                     },
                     modifier = Modifier
+                )
+            }
+        }
+
+        //Peminjaman
+        composable(
+            route = DestinasiHomePeminjaman.route
+        ) {
+            HomeScreenPeminjaman(
+                onDetailPeminjamanClick = { id_peminjaman ->
+                    navController.navigate("${DestinasiDetailPeminjaman.route}/$id_peminjaman")
+                    println("PengelolaanHalaman: id_= $id_peminjaman")
+                },
+                navigateToItemPeminjamanEntry = { navController.navigate(DestinasiInsertPeminjaman.route) },
+                navigateBack = { navController.popBackStack() },
+                navigateToEditPeminjaman = { id_peminjaman ->
+                    navController.navigate("${DestinasiUpdatePeminjaman.route}/$id_peminjaman")
+                },
+                modifier = Modifier
+            )
+        }
+
+        composable(
+            route = DestinasiInsertPeminjaman.route
+        ) {
+            EntryPeminjamanScreen(
+                navigateBack = {
+                    navController.popBackStack()
+                },
+                modifier = modifier
+            )
+        }
+
+        composable(
+            route = DestinasiDetailPeminjaman.routeWithArgs,
+            arguments = listOf(
+                navArgument(DestinasiDetailPeminjaman.id_peminjaman){
+                    type = NavType.IntType
+                }
+            )
+        ){
+                backStackEntry ->
+            val id_peminjaman = backStackEntry.arguments?.getInt(DestinasiDetailPeminjaman.id_peminjaman)
+            id_peminjaman?.let {
+                DetailPeminjamanView(
+                    idPeminjaman = it,
+                    onBackClick = {navController.popBackStack()}
+                )
+            }
+        }
+
+        composable(
+            DestinasiUpdatePeminjaman.routesWithArg,
+            arguments = listOf(
+                navArgument(DestinasiUpdatePeminjaman.id_peminjaman) {
+                    type = NavType.IntType
+                }
+            )
+        ) {
+            val id_peminjaman = it.arguments?.getInt(DestinasiUpdatePeminjaman.id_peminjaman)
+            id_peminjaman?.let { id_peminjaman ->
+                UpdatePeminjamanScreen(
+                    onBack = { navController.popBackStack() },
+                    onNavigate = {
+                        navController.popBackStack()
+                    },
+                    modifier = Modifier,
                 )
             }
         }
