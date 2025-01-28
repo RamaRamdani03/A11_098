@@ -20,7 +20,14 @@ import com.example.perpustakaan.ui.view.anggota.DetailAnggotaView
 import com.example.perpustakaan.ui.view.anggota.EntryAnggotaScreen
 import com.example.perpustakaan.ui.view.anggota.HomeScreenAnggota
 import com.example.perpustakaan.ui.view.anggota.UpdateAnggotaScreen
+import com.example.perpustakaan.ui.view.buku.DestinasiDetailBuku
 import com.example.perpustakaan.ui.view.buku.DestinasiHomeBuku
+import com.example.perpustakaan.ui.view.buku.DestinasiInsertBuku
+import com.example.perpustakaan.ui.view.buku.DestinasiUpdateBuku
+import com.example.perpustakaan.ui.view.buku.DetailBukuView
+import com.example.perpustakaan.ui.view.buku.EntryBukuScreen
+import com.example.perpustakaan.ui.view.buku.HomeScreenBuku
+import com.example.perpustakaan.ui.view.buku.UpdateBukuScreen
 import com.example.perpustakaan.ui.view.peminjaman.DestinasiHomePeminjaman
 import com.example.perpustakaan.ui.view.pengembalian.DestinasiHomePengembalian
 
@@ -105,6 +112,73 @@ fun PengelolaanHalaman (
             val id_anggota = it.arguments?.getInt(DestinasiUpdateAnggota.id_anggota)
             id_anggota?.let { id_anggota ->
                 UpdateAnggotaScreen(
+                    onBack = { navController.popBackStack() },
+                    onNavigate = {
+                        navController.popBackStack()
+                    },
+                    modifier = Modifier
+                )
+            }
+        }
+
+        //Buku
+        composable(
+            route = DestinasiHomeBuku.route
+        ) {
+            HomeScreenBuku(
+                onDetailBukuClick = { id_buku ->
+                    navController.navigate("${DestinasiDetailBuku.route}/$id_buku")
+                    println("PengelolaanHalaman: id_ = $id_buku")
+                },
+                navigateToItemBukuEntry= { navController.navigate(DestinasiInsertBuku.route) },
+                navigateBack = { navController.popBackStack() },
+                navigateToEditBuku = {id_buku ->
+                    navController.navigate("${DestinasiUpdateBuku.route}/$id_buku")
+                },
+                modifier = Modifier
+            )
+        }
+
+        composable(
+            route = DestinasiInsertBuku.route
+        ) {
+            EntryBukuScreen(
+                navigateBack = {
+                    navController.popBackStack()
+                },
+                modifier = modifier
+            )
+        }
+
+        composable(
+            route = DestinasiDetailBuku.routeWithArgs,
+            arguments = listOf(
+                navArgument(DestinasiDetailBuku.id_buku){
+                    type = NavType.IntType
+                }
+            )
+        ){
+                backStackEntry ->
+            val id_buku = backStackEntry.arguments?.getInt(DestinasiDetailBuku.id_buku)
+            id_buku?.let {
+                DetailBukuView(
+                    idBuku = it,
+                    onBackClick = {navController.popBackStack()}
+                )
+            }
+        }
+
+        composable(
+            DestinasiUpdateBuku.routesWithArg,
+            arguments = listOf(
+                navArgument(DestinasiUpdateBuku.id_buku) {
+                    type = NavType.IntType
+                }
+            )
+        ) {
+            val id_buku = it.arguments?.getInt(DestinasiUpdateBuku.id_buku)
+            id_buku?.let { id_buku ->
+                UpdateBukuScreen(
                     onBack = { navController.popBackStack() },
                     onNavigate = {
                         navController.popBackStack()
