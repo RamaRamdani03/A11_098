@@ -43,6 +43,12 @@ object PenyediaViewModel {
         initializer { InsertPeminjamanViewModel(perpustakaanAPP().container.peminjamanRepository) }
         initializer { UpdatePeminjamanViewModel(createSavedStateHandle(),perpustakaanAPP().container.peminjamanRepository) }
         initializer { DetailPeminjamanViewModel(perpustakaanAPP().container.peminjamanRepository) }
+
+        //Pengembalian
+        initializer { HomeViewModelPengembalian(perpustakaanAPP().container.pengembalianRepository) }
+        initializer { InsertPengembalianViewModel(perpustakaanAPP().container.pengembalianRepository) }
+        initializer { UpdatePengembalianViewModel(createSavedStateHandle(),perpustakaanAPP().container.pengembalianRepository) }
+        initializer { DetailPengembalianViewModel(perpustakaanAPP().container.pengembalianRepository) }
     }
 }
 
