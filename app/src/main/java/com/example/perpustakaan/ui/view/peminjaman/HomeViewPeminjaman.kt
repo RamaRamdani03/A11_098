@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
@@ -18,17 +19,71 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.perpustakaan.R
+import com.example.perpustakaan.ui.customwidget.CostumeTopAppBar
+import com.example.perpustakaan.ui.viewmodel.peminjaman.HomeViewModelPeminjaman
 import com.example.perpustakaan.ui.viewmodel.peminjaman.PeminjamanUiState
 import com.example.perpustakaan.data.model.Peminjaman
 import com.example.perpustakaan.ui.navigasi.AlamatNavigasi
+import com.example.perpustakaan.ui.viewmodel.PenyediaViewModel
 
 object DestinasiHomePeminjaman : AlamatNavigasi {
     override val route = "homePeminjaman"
     override val titleRes = "Data Peminjaman"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreenPeminjaman(
+    navigateToItemPeminjamanEntry: () -> Unit,
+    navigateBack: () -> Unit,
+    navigateToEditPeminjaman: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    onDetailPeminjamanClick: (Int) -> Unit = {},
+    viewModel: HomeViewModelPeminjaman = viewModel(factory = PenyediaViewModel.Factory)
+) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            CostumeTopAppBar(
+                title = DestinasiHomePeminjaman.titleRes,
+                canNavigateBack = true,
+                showRefresh = true,
+                scrollBehavior = scrollBehavior,
+                onRefresh = { viewModel.getPeminjaman() },
+                navigateUp = navigateBack
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = navigateToItemPeminjamanEntry,
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.padding(18.dp)
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Peminjaman")
+            }
+        }
+    ) { innerPadding ->
+        HomeStatusPeminjaman(
+            peminjamanUiState = viewModel.peminjamanUiState.value,
+            retryAction = { viewModel.getPeminjaman() },
+            modifier = Modifier.padding(innerPadding),
+            onDetailClick = onDetailPeminjamanClick,
+            onDeleteClick = {
+                viewModel.deletePeminjaman(it.id_peminjaman)
+                viewModel.getPeminjaman()
+            },
+            onEditPeminjaman = { id_peminjaman ->
+                navigateToEditPeminjaman(id_peminjaman)
+            }
+        )
+    }
 }
 
 @Composable
