@@ -6,21 +6,33 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.perpustakaan.data.ListPeminjaman
+import com.example.perpustakaan.ui.customwidget.CostumeTopAppBar
 import com.example.perpustakaan.ui.customwidget.Dropdown
 import com.example.perpustakaan.ui.customwidget.DynamicSelectTextField
 import com.example.perpustakaan.ui.navigasi.AlamatNavigasi
+import com.example.perpustakaan.ui.viewmodel.PenyediaViewModel
 import com.example.perpustakaan.ui.viewmodel.pengembalian.InsertPengembalianUiEvent
 import com.example.perpustakaan.ui.viewmodel.pengembalian.InsertPengembalianUiState
+import com.example.perpustakaan.ui.viewmodel.pengembalian.UpdatePengembalianViewModel
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -30,6 +42,45 @@ object DestinasiUpdatePengembalian : AlamatNavigasi {
     override val titleRes: String = "Update Pengembalian"
     const val id_pengembalian = "id_pengembalian"
     val routesWithArg = "$route/{$id_pengembalian}"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun UpdatePengembalianScreen(
+    onBack: () -> Unit,
+    onNavigate: () -> Unit,
+    viewModel: UpdatePengembalianViewModel = viewModel(factory = PenyediaViewModel.Factory),
+    modifier: Modifier = Modifier
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            CostumeTopAppBar(
+                title = DestinasiUpdatePengembalian.titleRes,
+                canNavigateBack = true,
+                scrollBehavior = scrollBehavior,
+                showRefresh = false,
+                navigateUp = onBack
+            )
+        }
+    ) { paddingValues ->
+        EntryBody(
+            modifier = Modifier
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState()),
+            insertUiState = viewModel.updateUiState,
+            onPengembalianValueChange = viewModel::updateInsertPengembalianState,
+            onSaveClick = {
+                coroutineScope.launch {
+                    viewModel.updatePengembalian()
+                    onNavigate()
+                }
+            }
+        )
+    }
 }
 
 @Composable
