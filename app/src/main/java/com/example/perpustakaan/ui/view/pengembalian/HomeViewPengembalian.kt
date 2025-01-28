@@ -4,7 +4,10 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
@@ -29,6 +32,36 @@ import java.time.temporal.ChronoUnit
 object DestinasiHomePengembalian : AlamatNavigasi {
     override val route = "homePengembalian"
     override val titleRes = "Data Pengembalian"
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun PengembalianLayout(
+    pengembalian: List<Pengembalian>,
+    modifier: Modifier = Modifier,
+    onDetailClick: (Pengembalian) -> Unit,
+    onDeleteClick: (Pengembalian) -> Unit = {},
+    onEditPengembaliann: (Int) -> Unit = {},
+    dataTglList: List<Pair<String, Int>>
+) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(pengembalian) { item ->
+            val dataKembali = dataTglList.find { it.second == item.id_peminjaman }?.first ?: "Tanggal tidak ditemukan"
+            PengembalianCard(
+                pengembalian = item,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onDetailClick(item) },
+                onDeleteClick = { onDeleteClick(item) },
+                onEditPengembaliann = onEditPengembaliann,
+                tglKembali = dataKembali
+            )
+        }
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
