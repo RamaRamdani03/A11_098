@@ -1,7 +1,10 @@
 package com.example.perpustakaan.ui.view.peminjaman
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.CheckCircle
@@ -25,6 +28,32 @@ import com.example.perpustakaan.ui.navigasi.AlamatNavigasi
 object DestinasiHomePeminjaman : AlamatNavigasi {
     override val route = "homePeminjaman"
     override val titleRes = "Data Peminjaman"
+}
+
+@Composable
+fun PeminjamanLayout(
+    peminjaman: List<Peminjaman>,
+    modifier: Modifier = Modifier,
+    onDetailClick: (Peminjaman) -> Unit,
+    onEditPeminjaman: (Int) -> Unit,
+    onDeleteClick: (Peminjaman) -> Unit = {}
+) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(peminjaman) { item ->
+            PeminjamanCard(
+                peminjaman = item,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onDetailClick(item) },
+                onDeleteClick = { onDeleteClick(item) },
+                onEditPeminjaman = onEditPeminjaman
+            )
+        }
+    }
 }
 
 @Composable
