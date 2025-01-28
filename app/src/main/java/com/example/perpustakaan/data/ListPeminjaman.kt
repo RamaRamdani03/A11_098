@@ -7,6 +7,8 @@ import com.example.perpustakaan.ui.viewmodel.anggota.HomeUiState
 import com.example.perpustakaan.ui.viewmodel.anggota.HomeViewModelAnggota
 import com.example.perpustakaan.ui.viewmodel.buku.BukuUiState
 import com.example.perpustakaan.ui.viewmodel.buku.HomeViewModelBuku
+import com.example.perpustakaan.ui.viewmodel.peminjaman.HomeViewModelPeminjaman
+import com.example.perpustakaan.ui.viewmodel.peminjaman.PeminjamanUiState
 
 object ListPeminjaman {
     @Composable
@@ -34,6 +36,39 @@ object ListPeminjaman {
         return when (judulState) {
             is BukuUiState.Success -> {
                 judulState.buku.map { it.id_buku to it.judul }
+            }
+            else -> {
+                emptyList()
+            }
+        }
+    }
+
+    @Composable
+    fun idPeminjaman(
+        lokasipeminjaman: HomeViewModelPeminjaman = viewModel(factory = PenyediaViewModel.Factory)
+    ): List<Int> {
+        val peminjamanState = lokasipeminjaman.peminjamanUiState.value
+
+        return when (peminjamanState) {
+            is PeminjamanUiState.Success -> {
+                peminjamanState.peminjaman.map { it.id_peminjaman }
+            }
+            else -> {
+                emptyList()
+            }
+        }
+    }
+
+    @Composable
+    fun tanggalKembali(
+        tglKembaliViewModel : HomeViewModelPeminjaman = viewModel(factory = PenyediaViewModel.Factory)
+    ) : List<Pair<String, Int>>
+    {
+        val dataTglKembali = tglKembaliViewModel.peminjamanUiState.value
+
+        return when (dataTglKembali) {
+            is PeminjamanUiState.Success -> {
+                dataTglKembali.peminjaman.map { it.tanggal_pengembalian to it.id_peminjaman }
             }
             else -> {
                 emptyList()
