@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -19,13 +20,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.perpustakaan.R
+import com.example.perpustakaan.data.ListPeminjaman.tanggalKembali
+import com.example.perpustakaan.ui.customwidget.CostumeTopAppBar
+import com.example.perpustakaan.ui.viewmodel.pengembalian.HomeViewModelPengembalian
 import com.example.perpustakaan.ui.viewmodel.pengembalian.PengembalianUiState
 import com.example.perpustakaan.data.model.Pengembalian
 import com.example.perpustakaan.ui.navigasi.AlamatNavigasi
+import com.example.perpustakaan.ui.viewmodel.PenyediaViewModel
+import com.example.perpustakaan.ui.viewmodel.peminjaman.HomeViewModelPeminjaman
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -33,6 +41,60 @@ import java.time.temporal.ChronoUnit
 object DestinasiHomePengembalian : AlamatNavigasi {
     override val route = "homePengembalian"
     override val titleRes = "Data Pengembalian"
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreenPengembalian(
+    navigateToItemPengembalianEntry: () -> Unit,
+    navigateBack: () -> Unit,
+    navigateToEditPengembaliann: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    onDetailPengembalianClick: (Int) -> Unit = {},
+    viewModel: HomeViewModelPengembalian = viewModel(factory = PenyediaViewModel.Factory),
+    tglKembaliViewModel : HomeViewModelPeminjaman = viewModel(factory = PenyediaViewModel.Factory),
+) {
+    val dataKembali = tanggalKembali(tglKembaliViewModel)
+
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            CostumeTopAppBar(
+                title = DestinasiHomePengembalian.titleRes,
+                canNavigateBack = true,
+                showRefresh = true,
+                scrollBehavior = scrollBehavior,
+                onRefresh = { viewModel.getPengembalian() },
+                navigateUp = navigateBack
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = navigateToItemPengembalianEntry,
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.padding(18.dp)
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Pengembalian")
+            }
+        }
+    ) { innerPadding ->
+        HomeStatusPengembalian(
+            pengembalianUiState = viewModel.pengembalianUiState.value,
+            retryAction = { viewModel.getPengembalian() },
+            modifier = Modifier.padding(innerPadding),
+            onDetailClick = onDetailPengembalianClick,
+            onDeleteClick = {
+                viewModel.deletePengembalian(it.id_pengembalian)
+                viewModel.getPengembalian()
+            },
+            onEditPengembalian = { id_pengembalian ->
+                navigateToEditPengembaliann(id_pengembalian)
+            },
+            dataTglList = dataKembali
+        )
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
