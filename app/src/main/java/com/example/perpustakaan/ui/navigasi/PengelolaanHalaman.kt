@@ -36,7 +36,14 @@ import com.example.perpustakaan.ui.view.peminjaman.DetailPeminjamanView
 import com.example.perpustakaan.ui.view.peminjaman.EntryPeminjamanScreen
 import com.example.perpustakaan.ui.view.peminjaman.HomeScreenPeminjaman
 import com.example.perpustakaan.ui.view.peminjaman.UpdatePeminjamanScreen
+import com.example.perpustakaan.ui.view.pengembalian.DestinasiDetailPengembalian
 import com.example.perpustakaan.ui.view.pengembalian.DestinasiHomePengembalian
+import com.example.perpustakaan.ui.view.pengembalian.DestinasiInsertPengembalian
+import com.example.perpustakaan.ui.view.pengembalian.DestinasiUpdatePengembalian
+import com.example.perpustakaan.ui.view.pengembalian.DetailPengembalianView
+import com.example.perpustakaan.ui.view.pengembalian.EntryPengembalianScreen
+import com.example.perpustakaan.ui.view.pengembalian.HomeScreenPengembalian
+import com.example.perpustakaan.ui.view.pengembalian.UpdatePengembalianScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -253,6 +260,73 @@ fun PengelolaanHalaman (
             val id_peminjaman = it.arguments?.getInt(DestinasiUpdatePeminjaman.id_peminjaman)
             id_peminjaman?.let { id_peminjaman ->
                 UpdatePeminjamanScreen(
+                    onBack = { navController.popBackStack() },
+                    onNavigate = {
+                        navController.popBackStack()
+                    },
+                    modifier = Modifier,
+                )
+            }
+        }
+
+        //Pengembalian
+        composable(
+            route = DestinasiHomePengembalian.route
+        ) {
+            HomeScreenPengembalian(
+                onDetailPengembalianClick = { id_pengembalian ->
+                    navController.navigate("${DestinasiDetailPengembalian.route}/$id_pengembalian")
+                    println("PengelolaanHalaman: id_= $id_pengembalian")
+                },
+                navigateToItemPengembalianEntry = { navController.navigate(DestinasiInsertPengembalian.route) },
+                navigateBack = { navController.popBackStack() },
+                navigateToEditPengembaliann = { id_pengembalian ->
+                    navController.navigate("${DestinasiUpdatePengembalian.route}/$id_pengembalian")
+                },
+                modifier = Modifier
+            )
+        }
+
+        composable(
+            route = DestinasiInsertPengembalian.route
+        ) {
+            EntryPengembalianScreen(
+                navigateBack = {
+                    navController.popBackStack()
+                },
+                modifier = modifier
+            )
+        }
+
+        composable(
+            route = DestinasiDetailPengembalian.routeWithArgs,
+            arguments = listOf(
+                navArgument(DestinasiDetailPengembalian.id_pengembalian){
+                    type = NavType.IntType
+                }
+            )
+        ){
+                backStackEntry ->
+            val id_pengembalian = backStackEntry.arguments?.getInt(DestinasiDetailPengembalian.id_pengembalian)
+            id_pengembalian?.let {
+                DetailPengembalianView(
+                    idPengembalian = it,
+                    onBackClick = {navController.popBackStack()}
+                )
+            }
+        }
+
+        composable(
+            DestinasiUpdatePengembalian.routesWithArg,
+            arguments = listOf(
+                navArgument(DestinasiUpdatePengembalian.id_pengembalian) {
+                    type = NavType.IntType
+                }
+            )
+        ) {
+            val id_pengembalian = it.arguments?.getInt(DestinasiUpdatePengembalian.id_pengembalian)
+            id_pengembalian?.let { id_pengembalian ->
+                UpdatePengembalianScreen(
                     onBack = { navController.popBackStack() },
                     onNavigate = {
                         navController.popBackStack()
