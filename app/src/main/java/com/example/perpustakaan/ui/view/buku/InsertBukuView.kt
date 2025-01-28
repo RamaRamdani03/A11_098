@@ -1,8 +1,115 @@
 package com.example.perpustakaan.ui.view.buku
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.example.perpustakaan.ui.navigasi.AlamatNavigasi
+import com.example.perpustakaan.ui.viewmodel.buku.InsertBukuUiEvent
 
 object DestinasiInsertBuku: AlamatNavigasi {
     override val route: String = "item_entry"
     override val titleRes = "Entry Buku"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FormBukuInput(
+    insertUiEvent: InsertBukuUiEvent,
+    modifier: Modifier = Modifier,
+    onValueChange: (InsertBukuUiEvent) -> Unit = {},
+    enabled: Boolean = true
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val statusOptions = listOf("Tersedia", "Di Pinjam")
+
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        OutlinedTextField(
+            value = insertUiEvent.judul,
+            onValueChange = { onValueChange(insertUiEvent.copy(judul = it)) },
+            label = { Text("Judul") },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true
+        )
+        OutlinedTextField(
+            value = insertUiEvent.penulis,
+            onValueChange = { onValueChange(insertUiEvent.copy(penulis = it)) },
+            label = { Text("Penulis") },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true
+        )
+        OutlinedTextField(
+            value = insertUiEvent.kategori,
+            onValueChange = { onValueChange(insertUiEvent.copy(kategori = it)) },
+            label = { Text("Kategori") },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true
+        )
+
+        // Dropdown untuk status
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded }
+        ) {
+            OutlinedTextField(
+                value = insertUiEvent.status,
+                onValueChange = {},
+                label = { Text("Status") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(),
+                readOnly = true,
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                },
+                enabled = enabled,
+                singleLine = true
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                statusOptions.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        text = { Text(selectionOption) },
+                        onClick = {
+                            onValueChange(insertUiEvent.copy(status = selectionOption))
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+
+        if (enabled) {
+            Text(
+                text = "Isi Semua Data!",
+                modifier = Modifier.padding(12.dp)
+            )
+        }
+        Divider(
+            thickness = 8.dp,
+            modifier = Modifier.padding(12.dp)
+        )
+    }
 }
