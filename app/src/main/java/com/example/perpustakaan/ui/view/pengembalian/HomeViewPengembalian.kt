@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.perpustakaan.R
+import com.example.perpustakaan.ui.viewmodel.pengembalian.PengembalianUiState
 import com.example.perpustakaan.data.model.Pengembalian
 import com.example.perpustakaan.ui.navigasi.AlamatNavigasi
 import java.time.LocalDate
@@ -32,6 +33,42 @@ import java.time.temporal.ChronoUnit
 object DestinasiHomePengembalian : AlamatNavigasi {
     override val route = "homePengembalian"
     override val titleRes = "Data Pengembalian"
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun HomeStatusPengembalian(
+    pengembalianUiState: PengembalianUiState,
+    retryAction: () -> Unit,
+    modifier: Modifier = Modifier,
+    onDeleteClick: (Pengembalian) -> Unit = {},
+    onDetailClick: (Int) -> Unit,
+    onEditPengembalian: (Int) -> Unit,
+    dataTglList: List<Pair<String, Int>>
+) {
+    when (pengembalianUiState) {
+        is PengembalianUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
+        is PengembalianUiState.Success -> {
+            if (pengembalianUiState.pengembalian.isEmpty()) {
+                Box(
+                    modifier = modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "Tidak ada data pengembalian")
+                }
+            } else {
+                PengembalianLayout(
+                    pengembalian = pengembalianUiState.pengembalian,
+                    modifier = modifier.fillMaxWidth(),
+                    onDetailClick = { onDetailClick(it.id_pengembalian) },
+                    onDeleteClick = { onDeleteClick(it) },
+                    onEditPengembaliann = onEditPengembalian,
+                    dataTglList = dataTglList
+                )
+            }
+        }
+        is PengembalianUiState.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
