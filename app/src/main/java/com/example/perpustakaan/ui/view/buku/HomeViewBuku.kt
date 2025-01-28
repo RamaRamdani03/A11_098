@@ -3,10 +3,12 @@ package com.example.perpustakaan.ui.view.buku
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -39,10 +41,44 @@ import androidx.compose.ui.unit.dp
 import com.example.perpustakaan.R
 import com.example.perpustakaan.data.model.Buku
 import com.example.perpustakaan.ui.navigasi.AlamatNavigasi
+import com.example.perpustakaan.ui.viewmodel.buku.BukuUiState
 
 object DestinasiHomeBuku : AlamatNavigasi {
     override val route = "Home Buku"
     override val titleRes = "Menu Buku"
+}
+
+@Composable
+fun HomeStatusBuku(
+    bukuUiState: BukuUiState,
+    retryAction: () -> Unit,
+    modifier: Modifier = Modifier,
+    onDeleteClick: (Buku) -> Unit = {},
+    onEditBuku: (Int) -> Unit,
+    onDetailClick: (Int) -> Unit
+) {
+    when (bukuUiState) {
+        is BukuUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
+        is BukuUiState.Success -> {
+            if (bukuUiState.buku.isEmpty()) {
+                Box(
+                    modifier = modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "Tidak ada buku")
+                }
+            } else {
+                BukuLayout(
+                    buku = bukuUiState.buku,
+                    modifier = modifier.fillMaxWidth(),
+                    onDetailClick = { onDetailClick(it.id_buku) },
+                    onDeleteClick = { onDeleteClick(it) },
+                    onEditBuku = onEditBuku
+                )
+            }
+        }
+        is BukuUiState.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
+    }
 }
 
 @Composable
