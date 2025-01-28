@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
@@ -13,21 +15,69 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.perpustakaan.ui.customwidget.CostumeTopAppBar
 import com.example.perpustakaan.ui.navigasi.AlamatNavigasi
+import com.example.perpustakaan.ui.viewmodel.PenyediaViewModel
 import com.example.perpustakaan.ui.viewmodel.buku.InsertBukuUiEvent
 import com.example.perpustakaan.ui.viewmodel.buku.InsertBukuUiState
+import com.example.perpustakaan.ui.viewmodel.buku.InsertBukuViewModel
+import kotlinx.coroutines.launch
 
 object DestinasiInsertBuku: AlamatNavigasi {
     override val route: String = "item_entry"
     override val titleRes = "Entry Buku"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EntryBukuScreen(
+    navigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: InsertBukuViewModel = viewModel(factory = PenyediaViewModel.Factory)
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            CostumeTopAppBar(
+                title = DestinasiInsertBuku.titleRes,
+                canNavigateBack = true,
+                scrollBehavior = scrollBehavior,
+                showRefresh = true,
+                navigateUp = navigateBack
+            )
+        }
+    ) { innerPadding ->
+        EntryBodyBuku(
+            insertUiState = viewModel.uiState,
+            onBukuValueChange = viewModel::updateInsertBukuState,
+            onSaveClick = {
+                coroutineScope.launch {
+                    viewModel.insertBuku()
+                    navigateBack() // After insert navigate back
+                }
+            },
+            modifier = Modifier
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .fillMaxWidth()
+        )
+    }
 }
 
 @Composable
