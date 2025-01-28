@@ -4,11 +4,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,10 +23,62 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.perpustakaan.ui.navigasi.AlamatNavigasi
 import com.example.perpustakaan.ui.viewmodel.buku.InsertBukuUiEvent
+import com.example.perpustakaan.ui.viewmodel.buku.InsertBukuUiState
 
 object DestinasiInsertBuku: AlamatNavigasi {
     override val route: String = "item_entry"
     override val titleRes = "Entry Buku"
+}
+
+@Composable
+fun EntryBodyBuku(
+    insertUiState: InsertBukuUiState,
+    onBukuValueChange: (InsertBukuUiEvent) -> Unit,
+    onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val showDialog = remember { mutableStateOf(false) }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(18.dp),
+        modifier = modifier.padding(12.dp)
+    ) {
+        FormBukuInput(
+            insertUiEvent = insertUiState.insertUiEvent,
+            onValueChange = onBukuValueChange,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Button(
+            onClick = { showDialog.value = true },
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Simpan")
+        }
+    }
+
+    if (showDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showDialog.value = false },
+            title = { Text(text = "Konfirmasi Penyimpanan Data") },
+            text = { Text(text = "Apakah data sudah diisi dengan benar?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDialog.value = false
+                        onSaveClick()
+                    }
+                ) {
+                    Text("Ya")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDialog.value = false }) {
+                    Text("Tidak")
+                }
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
