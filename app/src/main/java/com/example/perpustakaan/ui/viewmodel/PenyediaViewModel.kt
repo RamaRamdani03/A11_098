@@ -14,6 +14,14 @@ import com.example.perpustakaan.ui.viewmodel.buku.DetailBukuViewModel
 import com.example.perpustakaan.ui.viewmodel.buku.HomeViewModelBuku
 import com.example.perpustakaan.ui.viewmodel.buku.InsertBukuViewModel
 import com.example.perpustakaan.ui.viewmodel.buku.UpdateBukuViewModel
+import com.example.perpustakaan.ui.viewmodel.peminjaman.DetailPeminjamanViewModel
+import com.example.perpustakaan.ui.viewmodel.peminjaman.HomeViewModelPeminjaman
+import com.example.perpustakaan.ui.viewmodel.peminjaman.InsertPeminjamanViewModel
+import com.example.perpustakaan.ui.viewmodel.peminjaman.UpdatePeminjamanViewModel
+import com.example.perpustakaan.ui.viewmodel.pengembalian.DetailPengembalianViewModel
+import com.example.perpustakaan.ui.viewmodel.pengembalian.HomeViewModelPengembalian
+import com.example.perpustakaan.ui.viewmodel.pengembalian.InsertPengembalianViewModel
+import com.example.perpustakaan.ui.viewmodel.pengembalian.UpdatePengembalianViewModel
 
 object PenyediaViewModel {
 
@@ -29,6 +37,12 @@ object PenyediaViewModel {
         initializer { InsertBukuViewModel(perpustakaanAPP().container.bukuRepository) }
         initializer { UpdateBukuViewModel(createSavedStateHandle(),perpustakaanAPP().container.bukuRepository) }
         initializer { DetailBukuViewModel(perpustakaanAPP().container.bukuRepository) }
+
+        //Penminjaman
+        initializer { HomeViewModelPeminjaman(perpustakaanAPP().container.peminjamanRepository) }
+        initializer { InsertPeminjamanViewModel(perpustakaanAPP().container.peminjamanRepository) }
+        initializer { UpdatePeminjamanViewModel(createSavedStateHandle(),perpustakaanAPP().container.peminjamanRepository) }
+        initializer { DetailPeminjamanViewModel(perpustakaanAPP().container.peminjamanRepository) }
     }
 }
 
