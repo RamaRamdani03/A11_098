@@ -49,6 +49,23 @@ object DestinasiHomeBuku : AlamatNavigasi {
 }
 
 @Composable
+fun SearchBar(query: String, onQueryChanged: (String) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        androidx.compose.material3.TextField(
+            value = query,
+            onValueChange = onQueryChanged,
+            label = { Text("Cari buku") },
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
 fun HomeStatusBuku(
     bukuUiState: BukuUiState,
     retryAction: () -> Unit,
