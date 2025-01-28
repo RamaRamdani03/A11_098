@@ -7,23 +7,35 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.perpustakaan.data.ListPeminjaman
+import com.example.perpustakaan.ui.customwidget.CostumeTopAppBar
 import com.example.perpustakaan.ui.customwidget.Dropdown
 import com.example.perpustakaan.ui.customwidget.DynamicSelectTextField
 import com.example.perpustakaan.ui.navigasi.AlamatNavigasi
+import com.example.perpustakaan.ui.viewmodel.PenyediaViewModel
 import com.example.perpustakaan.ui.viewmodel.peminjaman.InsertPeminjamanUiEvent
 import com.example.perpustakaan.ui.viewmodel.peminjaman.InsertPeminjamanUiState
+import com.example.perpustakaan.ui.viewmodel.peminjaman.InsertPeminjamanViewModel
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -31,6 +43,46 @@ import java.util.Locale
 object DestinasiInsertPeminjaman : AlamatNavigasi {
     override val route: String = "item_entrypeminjaman"
     override val titleRes = "Entry Peminjaman"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EntryPeminjamanScreen(
+    navigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: InsertPeminjamanViewModel = viewModel(factory = PenyediaViewModel.Factory)
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            CostumeTopAppBar(
+                title = DestinasiInsertPeminjaman.titleRes,
+                canNavigateBack = true,
+                showRefresh = true,
+                onRefresh = { viewModel.insertPeminjaman() },
+                scrollBehavior = scrollBehavior,
+                navigateUp = navigateBack
+            )
+        }
+    ) { innerPadding ->
+        EntryBody(
+            insertUiState = viewModel.uiState,
+            onPeminjamanValueChange = viewModel::updateInsertPeminjamanState,
+            onSaveClick = {
+                coroutineScope.launch {
+                    viewModel.insertPeminjaman()
+                    navigateBack()
+                }
+            },
+            modifier = Modifier
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .fillMaxWidth()
+        )
+    }
 }
 
 @Composable
