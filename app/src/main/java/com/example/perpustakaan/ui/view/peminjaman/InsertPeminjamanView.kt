@@ -1,15 +1,19 @@
 package com.example.perpustakaan.ui.view.peminjaman
 
 import android.app.DatePickerDialog
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,6 +23,7 @@ import com.example.perpustakaan.ui.customwidget.Dropdown
 import com.example.perpustakaan.ui.customwidget.DynamicSelectTextField
 import com.example.perpustakaan.ui.navigasi.AlamatNavigasi
 import com.example.perpustakaan.ui.viewmodel.peminjaman.InsertPeminjamanUiEvent
+import com.example.perpustakaan.ui.viewmodel.peminjaman.InsertPeminjamanUiState
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -26,6 +31,36 @@ import java.util.Locale
 object DestinasiInsertPeminjaman : AlamatNavigasi {
     override val route: String = "item_entrypeminjaman"
     override val titleRes = "Entry Peminjaman"
+}
+
+@Composable
+fun EntryBody(
+    insertUiState: InsertPeminjamanUiState,
+    onPeminjamanValueChange: (InsertPeminjamanUiEvent) -> Unit,
+    onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LaunchedEffect(insertUiState) {
+        Log.d("InsertPeminjaman", "UI State Terbaru: id_buku: ${insertUiState.insertUiEvent.id_buku}, id_anggota: ${insertUiState.insertUiEvent.id_anggota}, tanggal_peminjaman: ${insertUiState.insertUiEvent.tanggal_peminjaman}, tanggal_pengembalian: ${insertUiState.insertUiEvent.tanggal_pengembalian}")
+    }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(18.dp),
+        modifier = modifier.padding(12.dp)
+    ) {
+        FormPeminjamanInput(
+            insertUiEvent = insertUiState.insertUiEvent,
+            onValueChange = onPeminjamanValueChange,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Button(
+            onClick = onSaveClick,
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Simpan")
+        }
+    }
 }
 
 @Composable
