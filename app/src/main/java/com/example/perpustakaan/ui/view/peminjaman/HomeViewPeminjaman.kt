@@ -22,12 +22,49 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.perpustakaan.R
+import com.example.perpustakaan.ui.viewmodel.peminjaman.PeminjamanUiState
 import com.example.perpustakaan.data.model.Peminjaman
 import com.example.perpustakaan.ui.navigasi.AlamatNavigasi
 
 object DestinasiHomePeminjaman : AlamatNavigasi {
     override val route = "homePeminjaman"
     override val titleRes = "Data Peminjaman"
+}
+
+@Composable
+fun HomeStatusPeminjaman(
+    peminjamanUiState: PeminjamanUiState,
+    retryAction: () -> Unit,
+    modifier: Modifier = Modifier,
+    onDeleteClick: (Peminjaman) -> Unit = {},
+    onEditPeminjaman: (Int) -> Unit,
+    onDetailClick: (Int) -> Unit
+) {
+    when (peminjamanUiState) {
+        is PeminjamanUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
+        is PeminjamanUiState.Success -> {
+            // Filter peminjaman yang statusnya "Dipinjam" atau yang belum dikembalikan
+            val peminjamanYangBelumDikembalikan = peminjamanUiState.peminjaman.filter { it.status == "Di Pinjam" }
+
+            if (peminjamanYangBelumDikembalikan.isEmpty()) {
+                Box(
+                    modifier = modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "Tidak ada peminjaman yang belum dikembalikan")
+                }
+            } else {
+                PeminjamanLayout(
+                    peminjaman = peminjamanYangBelumDikembalikan,
+                    modifier = modifier.fillMaxWidth(),
+                    onDetailClick = { onDetailClick(it.id_peminjaman) },
+                    onDeleteClick = { onDeleteClick(it) },
+                    onEditPeminjaman = onEditPeminjaman
+                )
+            }
+        }
+        is PeminjamanUiState.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
+    }
 }
 
 @Composable
