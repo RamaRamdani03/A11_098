@@ -1,14 +1,18 @@
 package com.example.perpustakaan.ui.view.buku
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.CheckCircle
@@ -39,6 +43,32 @@ import com.example.perpustakaan.ui.navigasi.AlamatNavigasi
 object DestinasiHomeBuku : AlamatNavigasi {
     override val route = "Home Buku"
     override val titleRes = "Menu Buku"
+}
+
+@Composable
+fun BukuLayout(
+    buku: List<Buku>,
+    modifier: Modifier = Modifier,
+    onDetailClick: (Buku) -> Unit,
+    onEditBuku: (Int) -> Unit,
+    onDeleteClick: (Buku) -> Unit = {}
+) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(buku) { book ->
+            BukuCard(
+                buku = book,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onDetailClick(book) },
+                onDeleteClick = { onDeleteClick(book) },
+                onEditBuku = onEditBuku
+            )
+        }
+    }
 }
 
 @Composable
