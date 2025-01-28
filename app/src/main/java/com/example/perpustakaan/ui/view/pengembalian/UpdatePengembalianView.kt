@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -19,6 +20,7 @@ import com.example.perpustakaan.ui.customwidget.Dropdown
 import com.example.perpustakaan.ui.customwidget.DynamicSelectTextField
 import com.example.perpustakaan.ui.navigasi.AlamatNavigasi
 import com.example.perpustakaan.ui.viewmodel.pengembalian.InsertPengembalianUiEvent
+import com.example.perpustakaan.ui.viewmodel.pengembalian.InsertPengembalianUiState
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -28,6 +30,32 @@ object DestinasiUpdatePengembalian : AlamatNavigasi {
     override val titleRes: String = "Update Pengembalian"
     const val id_pengembalian = "id_pengembalian"
     val routesWithArg = "$route/{$id_pengembalian}"
+}
+
+@Composable
+fun EntryBody(
+    insertUiState: InsertPengembalianUiState,
+    onPengembalianValueChange: (InsertPengembalianUiEvent) -> Unit,
+    onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(18.dp),
+        modifier = modifier.padding(12.dp)
+    ) {
+        FormPengembalianInput(
+            insertUiEvent = insertUiState.insertUiEvent,
+            onValueChange = onPengembalianValueChange,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Button(
+            onClick = onSaveClick,
+            shape = androidx.compose.material3.MaterialTheme.shapes.small,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Simpan")
+        }
+    }
 }
 
 @Composable
