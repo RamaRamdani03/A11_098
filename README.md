@@ -14,15 +14,19 @@
    ![Screenshot 2025-01-28 231749](https://github.com/user-attachments/assets/acb5246c-c48c-4b71-a1a0-5ea5b97465f6)
    ![Screenshot 2025-01-28 232029](https://github.com/user-attachments/assets/2ab4584a-450f-40f1-b5f2-788a50b488e8)
    ![Screenshot 2025-01-28 232126](https://github.com/user-attachments/assets/da8838d7-19ad-466b-b9f9-c61920149d96)
+   ![Screenshot 2025-01-28 232900](https://github.com/user-attachments/assets/d096ec53-c32b-4895-a1c2-c80f15919161)
 
-5. Halaman Peminjaman
+6. Halaman Peminjaman
    ![Screenshot 2025-01-28 232242](https://github.com/user-attachments/assets/2121ce0c-5b27-4827-ae35-a117cf25b928)
    ![Screenshot 2025-01-28 232329](https://github.com/user-attachments/assets/9d25ba40-d709-4b01-81d0-5227a0dd3e13)
    ![Screenshot 2025-01-28 232401](https://github.com/user-attachments/assets/94ad3405-9824-4854-9e6f-0c69851c4732)
    ![Screenshot 2025-01-28 232426](https://github.com/user-attachments/assets/8eb60fb1-11b7-4950-b8b6-7fe84bc7f354)
+   ![Screenshot 2025-01-28 232929](https://github.com/user-attachments/assets/3c9efb09-68c4-40d0-aa01-e27e1da7ef5c)
 
-6. Halaman Pengembalian
+8. Halaman Pengembalian
    ![Screenshot 2025-01-28 232554](https://github.com/user-attachments/assets/038d53ea-add1-45fd-b90f-f1549b90b310)
    ![Screenshot 2025-01-28 232618](https://github.com/user-attachments/assets/52fd0fbe-348e-400e-9f38-df58ed713d5d)
    ![Screenshot 2025-01-28 232714](https://github.com/user-attachments/assets/2d8e111f-bebf-4762-ba5e-c4348fb54d2a)
    ![Screenshot 2025-01-28 232734](https://github.com/user-attachments/assets/07d65f57-2ad8-44df-8804-bf0b48b04ee1)
+   ![Screenshot 2025-01-28 233013](https://github.com/user-attachments/assets/5eb33711-17a8-4ed9-8fe0-f754c0c45d6b)
+
